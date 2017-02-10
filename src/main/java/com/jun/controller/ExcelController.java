@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -225,12 +226,22 @@ public class ExcelController extends HttpServlet {
 		return excelData;
 	}
 	
-	public String parseRow(Row row, int j) throws Exception {
+	public String parseRow(Row row, int j){
 		Cell cell = row.getCell(j);
 		if (cell != null) {
-			return cell.getStringCellValue();
+			switch (cell.getCellType()) {
+		    case Cell.CELL_TYPE_STRING:
+		        return cell.getStringCellValue();
+		    case Cell.CELL_TYPE_NUMERIC:
+		    	HSSFDataFormatter dataFormatter = new HSSFDataFormatter();
+		    	return dataFormatter.formatCellValue(cell);
+		    case Cell.CELL_TYPE_FORMULA:
+		    	return cell.getCellFormula();
+		    default:
+		    	return cell.getStringCellValue();
+		    }
 		}
-		return null;
+		return "";
 	}
 	
 	public String getColumnCharName(int index){
