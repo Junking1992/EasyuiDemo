@@ -768,12 +768,18 @@ public class OpeningByXlsNew extends ProgressUtil {
 			strMapValue = "一二三四五六七轮次";
 		else if (strMapValue.equals("2,3"))
 			strMapValue = "二三轮次";
+		else if (strMapValue.equals("2,3,4"))
+			strMapValue = "二三四轮次";
+		else if (strMapValue.equals("2,3,4,5,6"))
+			strMapValue = "二三四五六轮次";
 		else if (strMapValue.equals("2,3,5,6,7,8"))
 			strMapValue = "二三五六七八轮次";
 		else if (strMapValue.equals("3,4"))
 			strMapValue = "三四轮次";
 		else if (strMapValue.equals("3,4,5"))
 			strMapValue = "三四五轮次";
+		else if (strMapValue.equals("3,4,6"))
+			strMapValue = "三四六轮次";
 		else if (strMapValue.equals("3,6"))
 			strMapValue = "三六轮次";
 		else if (strMapValue.equals("3,5"))
