@@ -7,16 +7,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class OpeningJarDataByXls extends ProgressUtil {
-	Map pubdocMap = new HashMap();
-	Map storeMap = new HashMap();
+	Map<String, String> pubdocMap = new HashMap<String, String>();
+	Map<String, String> storeMap = new HashMap<String, String>();
 	String areaNo = "";
 	String buildingNo = "";
 	String storeNo = "";
+	String rowNum = "";
 	Map<String, String> jarNumByStoreMap = new HashMap<String, String>();
 	Map<String, String> jarCubageByStoreMap = new HashMap<String, String>();
 
@@ -44,8 +46,7 @@ public class OpeningJarDataByXls extends ProgressUtil {
 
 			for (int i = 0; i < xlsAryList.size(); i++) {
 				Map map = (Map) xlsAryList.get(i);
-				// 错误行号
-				errorRowNum = getStrMapValue(map, "RN");
+				rowNum = (String) map.get("RN");
 				areaNo = "";
 				buildingNo = "";
 				storeNo = "";
@@ -58,69 +59,98 @@ public class OpeningJarDataByXls extends ProgressUtil {
 				}
 				String pk_store = getStrMapValue(abstoreMape, storeNo);
 				String pk_building = getStrMapValue(abstoreMape, buildingNo);
-				// getPk_area(getStrMapValue(map, "A"));
-				// String pk_store = getPk_store(getStrMapValue(map, "C"));
-				// getPk_building(buildingNo);
 				BigDecimal jarNumSum = getDecMapValue(map, "D");
-				BigDecimal jarNum250kg = getDecMapValue(map, "E");
-				BigDecimal jarNum350kg = getDecMapValue(map, "F");
-				BigDecimal jarNum500kg = getDecMapValue(map, "G");
+				String strE = getStrMapValue(map, "E");
+				String strF = getStrMapValue(map, "F");
+				String strG = getStrMapValue(map, "G");
+				List<String> jarAry250kg = getJarList(strE);
+				List<String> jarAry350kg = getJarList(strF);
+				List<String> jarAry500kg = getJarList(strG);				
+				BigDecimal jarNum250kg = new BigDecimal(jarAry250kg.size());
+				BigDecimal jarNum350kg = new BigDecimal(jarAry350kg.size());
+				BigDecimal jarNum500kg = new BigDecimal(jarAry500kg.size());
 
 				// 主逻辑 先干掉整个片区资料
 				String sql = "update mtws_jar set dr=2 where dr=0 and code like '" + areaNo + buildingNo + storeNo + "%'";
-				try {
-					update(sql);
-				} catch (Exception e) {
-					flag = false;
-					logMessage("Excel第"+errorRowNum+"行, 异常:" + e.getMessage());
-				}
+				update(sql);
 
 				if (jarNum250kg.compareTo(new BigDecimal("0")) == 0 && jarNum350kg.compareTo(new BigDecimal("0")) == 0 && jarNum500kg.compareTo(new BigDecimal("0")) == 0) {
 					flag = false;
-					logMessage("Excel第"+errorRowNum+"行, 酒库[" + areaNo + buildingNo + storeNo + "]中的250kg坛数,350kg坛数,500kg坛数不可都为0!");
+					logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]中的250kg坛数,350kg坛数,500kg坛数不可都为0!");
 					//throw new Exception("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]中的250kg坛数,350kg坛数,500kg坛数不可都为0!");
 				}
 				if (jarNumSum.compareTo(jarNum250kg.add(jarNum350kg).add(jarNum500kg)) != 0) {
-					flag = false;
-					logMessage("Excel第"+errorRowNum+"行, 酒库[" + areaNo + buildingNo + storeNo + "]总坛数[" + jarNumSum + "]与250kg坛数[" + jarNum250kg + "]或350kg坛数[" + jarNum350kg + "]或500kg坛数[" + jarNum500kg + "]坛数总数不一致!");
-					//throw new Exception("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]总坛数[" + jarNumSum + "]与250kg坛数[" + jarNum250kg + "]或350kg坛数[" + jarNum350kg + "]或500kg坛数[" + jarNum500kg + "]坛数总数不一致!");
+					int hasCount = 0;
+					if((strE+","+strF+","+strG).indexOf("有")>-1){						
+						if(strE.trim().equals("有")){
+							hasCount++;
+							for(int s=1; s<jarNumSum.intValue();s++){
+								String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(s).length()) + s;
+								if(!jarAry350kg.contains(jarNo)&&!jarAry500kg.contains(jarNo)){
+									jarAry250kg.add(jarNo);
+								}
+							}
+						}
+						if(strF.trim().equals("有")){
+							if(hasCount==1){
+								logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]350KG出现第二个'有'标识!");
+							}
+							for(int s=1; s<jarNumSum.intValue();s++){
+								String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(s).length()) + s;
+								if(!jarAry250kg.contains(jarNo)&&!jarAry500kg.contains(jarNo)){
+									jarAry350kg.add(jarNo);
+								}
+							}
+							hasCount++;
+						}
+						if(strG.trim().equals("有")){
+							if(hasCount==1){
+								logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]500KG出现第二个'有'标识!");
+							}
+							for(int s=1; s<jarNumSum.intValue();s++){
+								String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(s).length()) + s;
+								if(!jarAry250kg.contains(jarNo)&&!jarAry350kg.contains(jarNo)){
+									jarAry500kg.add(jarNo);
+								}
+							}
+							hasCount++;
+						}
+					}else{						
+						flag = false;
+						logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]总坛数[" + jarNumSum + "]与250kg坛数[" + jarNum250kg + "]或350kg坛数[" + jarNum350kg + "]或500kg坛数[" + jarNum500kg + "]坛数总数不一致!");
+						//throw new Exception("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]总坛数[" + jarNumSum + "]与250kg坛数[" + jarNum250kg + "]或350kg坛数[" + jarNum350kg + "]或500kg坛数[" + jarNum500kg + "]坛数总数不一致!");
+					}
 				}
-
-				// BigDecimal db_JarNumSum = getDecMapValue(jarNumByStoreMap,
-				// areaNo + buildingNo + storeNo);
-				// BigDecimal subJarNum = jarNumSum.subtract(db_JarNumSum);
+				//交叉重复检查
+				for(int c=0; c<jarAry250kg.size(); c++){
+					if(jarAry350kg.contains(jarAry250kg.get(c))||jarAry500kg.contains(jarAry250kg.get(c))){
+						logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]坛号[" + jarAry250kg.get(c) + "]在350KG或500KG有重复!");
+					}
+				}
+				for(int c=0; c<jarAry350kg.size(); c++){
+					if(jarAry500kg.contains(jarAry350kg.get(c))){
+						logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]坛号[" + jarAry350kg.get(c) + "]在500KG有重复!");
+					}
+				}
 
 				BigDecimal storejarNum = new BigDecimal("0");
 				String jarType = "";
-				int seq = 1;
 
 				if (jarNum250kg.compareTo(new BigDecimal("0")) > 0) {
 					storejarNum = jarNum250kg;
 					jarType = "250";
 
 					String jarcubage = getJarcubage(areaNo, jarType);
-					// 修改的资料
-					int updateInt = Integer.parseInt(storejarNum.toString());
-					// if(updateInt>Integer.parseInt(db_JarNumSum.toString())){
-					// updateInt = Integer.parseInt(db_JarNumSum.toString());
-					// }
-					for (int j = 0; j < updateInt; j++) {
-						String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(seq).length()) + seq;
+					for (int j = 0; j < jarAry250kg.size(); j++) {
+						//String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(seq).length()) + seq;
+						String jarNo = jarAry250kg.get(j).toString();
 						String updateSql = " update mtws_jar set dr=0,pk_store='" + pk_store + "',jarcubage=" + jarcubage + ",jarweigth=40,def2='" + jarcubage + "',def3='" + jarType + "' where code = '" + jarNo + "' ";
 						int num = update(updateSql);
 						if (num <= 0) {
-							String seqNo = "0000".substring(0, 4 - (String.valueOf(seq)).length()) + seq;
-							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A4100000'||'" + storeNo + "'||'" + seqNo + "','" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
-							try {
-								create(insertSql);
-							} catch (Exception e) {
-								flag = false;
-								logMessage("Excel第"+errorRowNum+"行, 异常:" + e.getMessage());
-							}
+							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||" + jarNo + ",'" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
+							create(insertSql);
 						}
-						seq++;
 					}
-
 				}
 
 				if (jarNum350kg.compareTo(new BigDecimal("0")) > 0) {
@@ -128,28 +158,16 @@ public class OpeningJarDataByXls extends ProgressUtil {
 					jarType = "350";
 
 					String jarcubage = getJarcubage(areaNo, jarType);
-					// 修改的资料
-					int updateInt = Integer.parseInt(storejarNum.toString());
-					// if(updateInt>Integer.parseInt(db_JarNumSum.toString())){
-					// updateInt = Integer.parseInt(db_JarNumSum.toString());
-					// }
-					for (int j = 0; j < updateInt; j++) {
-						String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(seq).length()) + seq;
+					for (int j = 0; j < jarAry350kg.size(); j++) {
+						//String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(seq).length()) + seq;
+						String jarNo = jarAry350kg.get(j).toString();
 						String updateSql = " update mtws_jar set dr=0,pk_store='" + pk_store + "',jarcubage=" + jarcubage + ",jarweigth=40,def2='" + jarcubage + "',def3='" + jarType + "' where code = '" + jarNo + "' ";
 						int num = update(updateSql);
 						if (num <= 0) {
-							String seqNo = "0000".substring(0, 4 - (String.valueOf(seq)).length()) + seq;
-							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A4100000'||'" + storeNo + "'||'" + seqNo + "','" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
-							try {
-								create(insertSql);
-							} catch (Exception e) {
-								flag = false;
-								logMessage("Excel第"+errorRowNum+"行, 异常:" + e.getMessage());
-							}
+							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||" + jarNo + ",'" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
+							create(insertSql);
 						}
-						seq++;
 					}
-
 				}
 
 				if (jarNum500kg.compareTo(new BigDecimal("0")) > 0) {
@@ -157,71 +175,24 @@ public class OpeningJarDataByXls extends ProgressUtil {
 					jarType = "500";
 
 					String jarcubage = getJarcubage(areaNo, jarType);
-					// 修改的资料
-					int updateInt = Integer.parseInt(storejarNum.toString());
-					// if(updateInt>Integer.parseInt(db_JarNumSum.toString())){
-					// updateInt = Integer.parseInt(db_JarNumSum.toString());
-					// }
-					for (int j = 0; j < updateInt; j++) {
-						String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(seq).length()) + seq;
+					for (int j = 0; j < jarAry500kg.size(); j++) {
+						//String jarNo = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(seq).length()) + seq;
+						String jarNo = jarAry500kg.get(j).toString();
 						String updateSql = " update mtws_jar set dr=0,pk_store='" + pk_store + "',jarcubage=" + jarcubage + ",jarweigth=40,def2='" + jarcubage + "',def3='" + jarType + "' where code = '" + jarNo + "' ";
 						int num = update(updateSql);
 						if (num <= 0) {
-							String seqNo = "0000".substring(0, 4 - (String.valueOf(seq)).length()) + seq;
-							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A4100000'||'" + storeNo + "'||'" + seqNo + "','" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
-							try {
-								create(insertSql);
-							} catch (Exception e) {
-								flag = false;
-								logMessage("Excel第"+errorRowNum+"行, 异常:" + e.getMessage());
-							}
+							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||" + jarNo + ",'" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
+							create(insertSql);
 						}
-						seq++;
 					}
-
 				}
 
 				if (storejarNum.compareTo(new BigDecimal("0")) == 0) {
 					flag = false;
-					logMessage("Excel第"+errorRowNum+"行, 酒库[" + areaNo + buildingNo + storeNo + "]的酒坛个数失败!");
+					logMessage("取得Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]的酒坛个数失败!");
 					//throw new Exception("取得Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]的酒坛个数失败!");
 				}
 
-				// 新增的资料
-				// for(int add=0; add<Integer.parseInt(subJarNum.toString());
-				// add++){
-				// String nowJarNumStr = db_JarNumSum.add(new
-				// BigDecimal(add+1)).toString();
-				// String jarNo = areaNo + buildingNo + storeNo +
-				// "0000".substring(0, 4-nowJarNumStr.length()) + nowJarNumStr;
-				// String seqNo = "000".substring(0, 3 -
-				// (String.valueOf(add)).length()) + add;
-				// String insertSql = "insert into mtws_jar (pk_jar,
-				// code,name,jarcubage,jarweigth,def2,def3,pk_measure," +
-				// "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard,"
-				// +
-				// "islock,isok,ts,dr) select
-				// substr(pk_jar,1,13)||"+storeNo+"||'"+seqNo+"'," +
-				// "'"+jarNo+"','"+jarNo+"'," +
-				// "'"+jarcubage+"',40,'"+jarcubage+"',"+jarType+",pk_measure,'"+pk_store+"',isseal,creator,modifier,creationtime,"
-				// +
-				// "modifiedtime,pk_org,pk_group,def1,isstandard,islock,isok,ts,dr
-				// from mtws_jar " +
-				// "where code = '"+areaNo+buildingNo+storeNo+"0001' and dr=0 ";
-				// create(insertSql);
-				// }
-
-				// 删除的资料
-				// for(int sub=0; sub>Integer.parseInt(subJarNum.toString());
-				// sub--){
-				// String nowJarNumStr = db_JarNumSum.add(new
-				// BigDecimal(sub)).toString();
-				// String jarNo = areaNo + buildingNo + storeNo +
-				// "0000".substring(0, 4-nowJarNumStr.length()) + nowJarNumStr;
-				// String updateSql = " update mtws_jar set dr=1 where code =
-				// '"+jarNo+"' ";
-				// update(updateSql);
-				// }
 				// 进度增长
 				addCount();
 			}
@@ -232,9 +203,8 @@ public class OpeningJarDataByXls extends ProgressUtil {
 				throw new Exception("上传错误,请查看错误信息:");
 			}
 		} catch (Exception e) {
-			if(conn != null){
-				conn.rollback();
-			}
+			conn.rollback();
+			System.out.println("erro at " + rowNum);
 			throw e;
 		} finally {
 			close(conn);
@@ -265,24 +235,6 @@ public class OpeningJarDataByXls extends ProgressUtil {
 		} else
 			throw new Exception("该片区[" + areaNo + "]," + jarType + "KG酒坛的未取到理论容易量!");
 	}
-
-	// private Map initJarNumByStoreMap() throws SQLException {
-	// // TODO 自动生成的方法存根
-	// //取得05片区各库位总坛数
-	// if(areaNo.equals("")) areaNo = "XXXXX";
-	// String jarNumStoreSql = "select substr(code,1,9) as store ,count(code)
-	// jarnum from mtws_jar where code like '"+areaNo+"%' and dr=0 " +
-	// " group by substr(code,1,9) ";
-	// Statement Stmt = conn.createStatement();
-	// ResultSet rs = Stmt.executeQuery(jarNumStoreSql);
-	// Map rstMap = new HashMap();
-	// while(rs.next()){
-	// rstMap.put(rs.getString("store"), rs.getString("jarnum"));
-	// }
-	// Stmt.close();
-	// rs.close();
-	// return rstMap;
-	// }
 
 	public ResultSet query(String sql) throws SQLException {
 		// PreparedStatement:是预编译的,对于批量处理可以大大提高效率.也叫JDBC存储过程
@@ -328,11 +280,11 @@ public class OpeningJarDataByXls extends ProgressUtil {
 		return new BigDecimal(map != null && map.get(key) != null && !map.get(key).toString().trim().equals("") ? map.get(key).toString().trim() : "0");
 	}
 
-	private Map initPubDocMap() throws SQLException {
+	private Map<String, String> initPubDocMap() throws SQLException {
 		String sql = "select code,pk_pubdoc from mtws_pubdoc where dr=0";
 		Statement Stmt = conn.createStatement();
 		ResultSet rs = Stmt.executeQuery(sql);
-		Map rstMap = new HashMap();
+		Map<String, String> rstMap = new HashMap<String, String>();
 		while (rs.next()) {
 			rstMap.put(rs.getString("code"), rs.getString("pk_pubdoc"));
 		}
@@ -399,14 +351,14 @@ public class OpeningJarDataByXls extends ProgressUtil {
 		return pk_store;
 	}
 
-	private Map initStoreMap() throws SQLException {
+	private Map<String, String> initStoreMap() throws SQLException {
 		// TODO 自动生成的方法存根
 		// String sql = "select substr(code,6,4) as storeno,code from
 		// mtws_pubdoc where def2='2' and dr=0";
 		String sql = "select substr(code,6,4) as storeno,code from mtws_pubdoc where dr=0 and code like '" + areaNo + "%' and name like '%库'";
 		Statement Stmt = conn.createStatement();
 		ResultSet rs = Stmt.executeQuery(sql);
-		Map rstMap = new HashMap();
+		Map<String, String> rstMap = new HashMap<String, String>();
 		while (rs.next()) {
 			rstMap.put(rs.getString("storeno"), rs.getString("code"));
 		}
@@ -468,6 +420,64 @@ public class OpeningJarDataByXls extends ProgressUtil {
 		return rstMap;
 	}
 
+	private List<String> getJarList(String strMapValue) throws Exception {
+		List<String> jarList = new ArrayList<String>();
+		if ("".equals(strMapValue.trim())||"无".equals(strMapValue.trim())||"有".equals(strMapValue.trim())) {
+			return jarList;
+		}
+		// TODO 自动生成的方法存根
+		strMapValue = strMapValue.replaceAll("--", "-");
+		strMapValue = strMapValue.replaceAll("－－", "-");
+		strMapValue = strMapValue.replaceAll("－", "-");
+		strMapValue = strMapValue.replaceAll("—", "-");
+		strMapValue = strMapValue.replaceAll("——", "-");
+		strMapValue = strMapValue.replaceAll("、", "@");
+		strMapValue = strMapValue.replaceAll(",", "@");
+		strMapValue = strMapValue.replaceAll("，", "@");
+		strMapValue = strMapValue.replaceAll("\\.", "@");
+		String[] strAry = strMapValue.split("@");
+		for (int i = 0; i < strAry.length; i++) {
+			String strTmp = strAry[i].trim();
+			if (strTmp.indexOf("-") > -1) {
+				String[] strTmpAry = strTmp.split("-");
+				int min = Integer.parseInt(strTmpAry[0].trim());
+				int max = Integer.parseInt(strTmpAry[1].trim());
+				if (min > max) {
+					int temp = min;
+					min = max;
+					max = temp;
+				}
+				if(max>9999 || min>9999){
+					throw new Exception("坛号["+min+"]-["+max+"]超出范围!");
+				}
+				
+				String minJar = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(min).length()) + min;
+				String maxJar = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(max).length()) + max;
+				
+				for (int j = 0; j <= max - min; j++) {
+					String jarNo = String.valueOf(min + j);
+					jarList.add(areaNo + buildingNo + storeNo + "0000".substring(0, 4 - jarNo.length()) + jarNo);
+				}
+			} else {
+				if(strTmp.length() > 4){
+					throw new Exception("坛号["+strTmp+"]超出范围!");
+				}
+				String jarCode = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - strTmp.length()) + strTmp;
+				jarList.add(jarCode);
+			}
+		}
+		//检查是否有重复的数据
+		for(int c=0; c<jarList.size(); c++){
+			for(int d=c+1; d<jarList.size(); d++){
+				if(jarList.get(c).equals(jarList.get(d))){
+					logMessage("Excel档中的酒库[" + areaNo + buildingNo + storeNo + "]坛号[" + jarList.get(c) + "]有重复!");
+				}
+			}
+		}
+		Collections.sort(jarList);
+		return jarList;
+	}
+	
 	private void initJarNumByStoreMap() throws SQLException {
 		// TODO 自动生成的方法存根
 		// 取得05片区各库位总坛数
