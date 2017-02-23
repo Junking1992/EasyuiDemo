@@ -14,23 +14,22 @@
 <body>
 	<div id="cc" class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'west',border:false" style="padding: 15px;width:600px;">
-			导入坛动态库存：<input id="uploadA" class="easyui-filebox" style="width:300px">
+			坛动态库存导入：<input id="uploadA" class="easyui-filebox" style="width:300px">
 			<a id="btn" href="javascript:upLoad('uploadA');" class="easyui-linkbutton" style="width: 70px">上传</a> 
 			<img id='msg_uploadA' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadA" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			<br/>
-			导入坛基础资料：<input id="uploadB" class="easyui-filebox" style="width:300px">
+			坛基础资料导入：<input id="uploadB" class="easyui-filebox" style="width:300px">
 			<a id="btn" href="javascript:upLoad('uploadB');" class="easyui-linkbutton" style="width: 70px">上传</a> 
 			<img id='msg_uploadB' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadB" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			<br/>
-			导入库功能分区：<input id="uploadC" class="easyui-filebox" style="width:300px">
+			库功能分区导入：<input id="uploadC" class="easyui-filebox" style="width:300px">
 			<a id="btn" href="javascript:upLoad('uploadC');" class="easyui-linkbutton" style="width: 70px">上传</a> 
 			<img id='msg_uploadC' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadC" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			<br/>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			核对：<input id="uploadD" class="easyui-filebox" style="width:300px">
+			大灌资料导入：&nbsp;&nbsp;&nbsp;<input id="uploadD" class="easyui-filebox" style="width:300px">
 			<a id="btn" href="javascript:upLoad('uploadD');" class="easyui-linkbutton" style="width: 70px">上传</a> 
 			<img id='msg_uploadD' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadD" class="easyui-progressbar" style="width:396px;display:none;"></div>

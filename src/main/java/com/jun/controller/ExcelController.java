@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.jun.service.OpeningByXlsNew;
+import com.jun.service.OpeningGuanDataByXls;
 import com.jun.service.OpeningJarDataByXls;
 import com.jun.service.OpeningStoreDataXls;
 import com.jun.service.ProgressUtil;
@@ -115,10 +116,10 @@ public class ExcelController extends HttpServlet {
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
 					}else if("uploadD".equals(action)){
-//						main = new OpeningStoreDataXls();
-//						main.fileName = fileName;
-						data = parseFinanceExcel(sourcePath + fileName);
-//						main.initIquantityDate(data);
+						main = new OpeningGuanDataByXls();
+						main.fileName = fileName;
+						data = parseExcel(sourcePath + fileName);
+						main.initIquantityDate(data);
 					}
 					state = true;
 				} catch (Exception e) {
