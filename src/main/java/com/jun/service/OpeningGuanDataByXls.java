@@ -17,6 +17,7 @@ public class OpeningGuanDataByXls extends ProgressUtil {
 	String areaNo = "";// 片区号
 	String buildingNo = "";// 栋号
 	String storeNo = "";// 库号
+	String jarName = "";// 罐名
 	String rowNum = "";// 错误行号
 
 	public void initIquantityDate(List xlsAryList) throws Exception {
@@ -36,7 +37,6 @@ public class OpeningGuanDataByXls extends ProgressUtil {
 				String buildingNo_pk = getPk_building(getStrMapValue(map, "B"));
 				String storeNo_pk = getPk_store(getStrMapValue(map, "C"));
 				String jarCode = getJarCode(getStrMapValue(map, "D"));
-				String jarName = Integer.parseInt(jarCode.substring(9)) + "号罐";
 				String capacity = getDecMapValue(map, "E").toString();
 				String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,def5,dr) values('1001A41'||'" + jarCode + "','" + jarCode + "','" + jarName + "'," + capacity + "," + "100," + capacity + "," + capacity + ",'1001A41000000000034A','" + storeNo_pk + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),'LG',0)";
 				create(insertSql);
@@ -162,10 +162,10 @@ public class OpeningGuanDataByXls extends ProgressUtil {
 				throw new Exception("第"+rowNum+"行Excel的栋号[" + building + "]不能识别!");
 			}
 		}else{
-			if(buildingNow.length() > 3){
+			if(buildingNow.length() != 3){
 				throw new Exception("第"+rowNum+"行Excel的栋号[" + building + "]未找到对应的栋号编码!");
 			}
-			buildingNo = areaNo + String.format("%03d", Integer.parseInt(buildingNow.trim()));
+			buildingNo = areaNo + buildingNow;
 			if(!"".equals(getStrMapValue(pubdocMap, buildingNo))){
 				return getStrMapValue(pubdocMap, buildingNo);
 			}else{
@@ -175,43 +175,50 @@ public class OpeningGuanDataByXls extends ProgressUtil {
 	}
 
 	private String getPk_store(String store) throws Exception {
-		if ("".equals(store.trim())){
+		if ("".equals(store)){
 			throw new Exception("第"+rowNum+"行Excel的库号不能为空！");
 		}
 		if("地下室".equals(store.trim())){
-			storeNo = buildingNo + "0000";
+			//地下室由三码栋号加A组成
+			storeNo = buildingNo + buildingNo.substring(2) + "A";
+			if(!"".equals(getStrMapValue(pubdocMap, storeNo))){
+				return getStrMapValue(pubdocMap, storeNo);
+			}else{
+				throw new Exception("第"+rowNum+"行Excel的库号[" + store + "]未找到对应的库号编码!");
+			}
+		}else if (buildingNo.indexOf("E") > -1){
+			if(store.length() > 1){
+				throw new Exception("第"+rowNum+"行Excel的库号[" + store + "]未找到对应的库号编码!");
+			}
+			storeNo = buildingNo + buildingNo.substring(2) + store;
 			if(!"".equals(getStrMapValue(pubdocMap, storeNo))){
 				return getStrMapValue(pubdocMap, storeNo);
 			}else{
 				throw new Exception("第"+rowNum+"行Excel的库号[" + store + "]未找到对应的库号编码!");
 			}
 		}else{
-			if(store.length() > 4){
-				throw new Exception("第"+rowNum+"行Excel的库号[" + store + "]未找到对应的库号编码!");
-			}
-			storeNo = buildingNo + String.format("%04d", Integer.parseInt(store.trim()));
-			if(!"".equals(getStrMapValue(pubdocMap, storeNo))){
-				return getStrMapValue(pubdocMap, storeNo);
-			}else{
-				throw new Exception("第"+rowNum+"行Excel的库号[" + store + "]未找到对应的库号编码!");
-			}
+			return "";
 		}
 	}
 	
 	private String getJarCode(String jarStr) throws Exception {
-		if ("".equals(jarStr.trim())){
+		if ("".equals(jarStr)){
 			throw new Exception("第"+rowNum+"行Excel的灌号不能为空！");
 		}
 		String jarStrNew = jarStr.replaceAll("--", "-");
 		jarStrNew = jarStr.replaceAll("~", "-");
 		if(jarStrNew.indexOf("-") > -1){
-			String second = jarStrNew.split("-")[1];
-			if(second != null && !"".equals(second)){
-				return storeNo + String.format("%04d", Integer.parseInt(second.trim()));
+			String[] arr = jarStrNew.split("-");
+			String first = arr[0];
+			String second = arr[1];
+			if(first != null && second != null && !"".equals(first) && !"".equals(second)){
+				jarName = first.trim() + "-" + second.trim() + "罐";
+				return storeNo + String.format("%02d", Integer.parseInt(first.trim())) + String.format("%02d", Integer.parseInt(second.trim()));
 			}else{
 				throw new Exception("第"+rowNum+"行Excel的灌号["+jarStr+"]格式有误！");
 			}
 		}else{
+			jarName = jarStr.trim() + "号罐";
 			return storeNo + String.format("%04d", Integer.parseInt(jarStr.trim()));
 		}
 	}
