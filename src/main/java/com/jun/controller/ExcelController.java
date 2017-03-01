@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.jun.service.OpeningByXlsGuan;
 import com.jun.service.OpeningByXlsNew;
 import com.jun.service.OpeningGuanDataByXls;
 import com.jun.service.OpeningJarDataByXls;
@@ -117,6 +118,11 @@ public class ExcelController extends HttpServlet {
 						main.initIquantityDate(data);
 					}else if("uploadD".equals(action)){
 						main = new OpeningGuanDataByXls();
+						main.fileName = fileName;
+						data = parseExcel(sourcePath + fileName);
+						main.initIquantityDate(data);
+					}else if("uploadE".equals(action)){
+						main = new OpeningByXlsGuan();
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);

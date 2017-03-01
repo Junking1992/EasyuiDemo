@@ -30,7 +30,7 @@ public class InputExcelByJK {
 
 	public static void main(String[] args) throws Exception {
 		InputExcelByJK jk = new InputExcelByJK();
-		List<Map<String, String>> data = jk.parseFinanceExcel("E:/UploadExcel/2017年用2月改版账目.xlsx");
+		List<Map<String, String>> data = jk.parseFinanceExcel("E:/UploadExcel/2017年用3月1日改版账目.xlsx");
 		System.out.println("共有" + data.size() + "条数据");
 		conn = jk.getConnection();
 		conn.setAutoCommit(false);
