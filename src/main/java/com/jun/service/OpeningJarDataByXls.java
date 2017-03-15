@@ -147,7 +147,7 @@ public class OpeningJarDataByXls extends ProgressUtil {
 						String updateSql = " update mtws_jar set dr=0,pk_store='" + pk_store + "',jarcubage=" + jarcubage + ",jarweigth=40,def2='" + jarcubage + "',def3='" + jarType + "' where code = '" + jarNo + "' ";
 						int num = update(updateSql);
 						if (num <= 0) {
-							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||" + jarNo + ",'" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
+							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||'" + jarNo + "','" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
 							create(insertSql);
 						}
 					}
@@ -164,7 +164,7 @@ public class OpeningJarDataByXls extends ProgressUtil {
 						String updateSql = " update mtws_jar set dr=0,pk_store='" + pk_store + "',jarcubage=" + jarcubage + ",jarweigth=40,def2='" + jarcubage + "',def3='" + jarType + "' where code = '" + jarNo + "' ";
 						int num = update(updateSql);
 						if (num <= 0) {
-							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||" + jarNo + ",'" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
+							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||'" + jarNo + "','" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
 							create(insertSql);
 						}
 					}
@@ -181,7 +181,7 @@ public class OpeningJarDataByXls extends ProgressUtil {
 						String updateSql = " update mtws_jar set dr=0,pk_store='" + pk_store + "',jarcubage=" + jarcubage + ",jarweigth=40,def2='" + jarcubage + "',def3='" + jarType + "' where code = '" + jarNo + "' ";
 						int num = update(updateSql);
 						if (num <= 0) {
-							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||" + jarNo + ",'" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
+							String insertSql = "insert into mtws_jar (pk_jar,code,name,jarcubage,jarweigth,def2,def3,pk_measure," + "pk_store,isseal,creator,modifier,creationtime,modifiedtime,pk_org,pk_group,def1,isstandard," + "islock,isok,ts,dr) values('1001A41'||'" + jarNo + "','" + jarNo + "','" + jarNo + "'," + jarcubage + "," + "40," + jarcubage + "," + jarType + ",'1001A41000000000034A','" + pk_store + "','N','1001A4100000000000OU'," + "'1001A4100000000000OU',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0001A410000000000954','0001A5100000000001KL','已启用','N','N','N',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),0)";
 							create(insertSql);
 						}
 					}
