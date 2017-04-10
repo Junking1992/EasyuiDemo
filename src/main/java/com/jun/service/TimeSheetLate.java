@@ -29,7 +29,7 @@ public class TimeSheetLate {
 	public static List<Map<String, String>> errorMsg = new ArrayList<Map<String, String>>();
 
 	// 上班时间(晚于等于这个时间就算迟到)
-	public static String startTime = "08:34";
+	public static String startTime = "08:33";
 	// 下班时间(早于等于这个时间就算早退)
 	public static String endTime = "17:28";
 	// 导出Excel路径
