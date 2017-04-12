@@ -37,9 +37,9 @@ public class ExcelController extends HttpServlet {
 	public String sourcePath = "E:/UploadExcel/";
 
 	/**
-	 * 从第几行开始读取数据(第一行为0),默认从第二行开始
+	 * 从第几行开始读取数据(第一行为0)
 	 */
-	public int startRowNum = 1;
+	public int startRowNum = 0;
 	
 	/**
 	 * 文件名
@@ -108,21 +108,25 @@ public class ExcelController extends HttpServlet {
 						main.initIquantityDate(data);
 					}else if("uploadB".equals(action)){
 						main = new OpeningJarDataByXls();
+						startRowNum = 1;
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
 					}else if("uploadC".equals(action)){
 						main = new OpeningStoreDataXls();
+						startRowNum = 1;
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
 					}else if("uploadD".equals(action)){
 						main = new OpeningGuanDataByXls();
+						startRowNum = 1;
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
 					}else if("uploadE".equals(action)){
 						main = new OpeningByXlsGuan();
+						startRowNum = 1;
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
