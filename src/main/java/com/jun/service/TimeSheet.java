@@ -29,7 +29,7 @@ public class TimeSheet {
 
 	public static void main(String[] args) throws Exception {
 		TimeSheet jk = new TimeSheet();
-		List<Map<String, String>> data = jk.parseExcel("D:/3月考勤报表.xlsx");
+		List<Map<String, String>> data = jk.parseExcel("D:/4月考勤数据.xls");
 		System.out.println("共有" + data.size() + "条数据");
 		conn = jk.getConnection();
 		conn.setAutoCommit(false);

@@ -31,7 +31,7 @@ public class TimeSheetLate {
 	// 上班时间(晚于等于这个时间就算迟到)
 	public static String startTime = "08:33";
 	// 下班时间(早于等于这个时间就算早退)
-	public static String endTime = "17:28";
+	public static String endTime = "17:27";
 	// 导出Excel路径
 	public static String path = "C:/Users/lx/Desktop/";
 
