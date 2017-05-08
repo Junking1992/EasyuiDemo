@@ -39,6 +39,11 @@
 			<img id='msg_uploadE' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadE" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			<br/>
+			坛号库存导入：&nbsp;&nbsp;&nbsp;<input id="uploadF" class="easyui-filebox" style="width:300px">
+			<a id="btn" href="javascript:upLoad('uploadF');" class="easyui-linkbutton" style="width: 70px">上传</a> 
+			<img id='msg_uploadF' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
+			<br/><br/><div id="progressbar_uploadF" class="easyui-progressbar" style="width:396px;display:none;"></div>
+			<br/>
 		</div>
 		<div id="content" data-options="region:'center',border:false" style="padding: 15px;">
 		</div>
