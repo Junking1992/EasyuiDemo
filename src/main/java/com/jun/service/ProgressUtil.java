@@ -95,6 +95,7 @@ public abstract class ProgressUtil {
 		FileWriter fileWriter = new FileWriter(logFile, true);
 		fileWriter.write(msg + "\r\n");
 		fileWriter.close();
+		System.out.println(msg);
 		logMsg.append( msg + "<br/>");
 	}
 

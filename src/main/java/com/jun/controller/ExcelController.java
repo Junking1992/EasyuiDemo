@@ -1,6 +1,7 @@
 package com.jun.controller;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -24,6 +25,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.jun.service.OpeningByNewWine;
+import com.jun.service.OpeningByXlsAutoUpload;
 import com.jun.service.OpeningByXlsGuan;
 import com.jun.service.OpeningByXlsNew;
 import com.jun.service.OpeningGuanDataByXls;
@@ -137,6 +139,25 @@ public class ExcelController extends HttpServlet {
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
+					}else if("uploadG".equals(action)){
+						while(true){
+							String path = "E:/UploadExcel/AutoUpload/";
+							String name = findFile(path);
+							if(name == null){
+								System.out.println("搜索文档中...");
+								continue;
+							}
+							startRowNum = 2;
+							data = parseExcel(path + name);
+							main = new OpeningByXlsAutoUpload();
+							main.fileName = name;
+							try {
+								main.initIquantityDate(data);
+							} catch (Exception e) {
+								markFile(path + name);
+							}
+							deleteFile(path + name);
+						}
 					}
 					state = true;
 				} catch (Exception e) {
@@ -266,6 +287,50 @@ public class ExcelController extends HttpServlet {
 		return String.valueOf((char) (65 + index));
 	}
 	
+	public String findFile(String path) throws Exception{
+		Thread.sleep(2000);
+		File directory = new File(path);
+		if(!directory.isDirectory()){
+			throw new Exception("path必须是目录路径！");
+		}
+		File[] files = directory.listFiles(new ExcelFilter());
+		if(files.length > 0){
+			return files[0].getName();
+		}else{
+			return null;
+		}
+	}
+	
+	protected void deleteFile(String path) {
+		File file = new File(path);
+		if(file.exists()){
+			file.delete();
+		}
+	}
+	
+	class ExcelFilter implements FilenameFilter{
+		@Override
+		public boolean accept(File dir, String name) {
+			if(name.toLowerCase().endsWith(".xls") || name.toLowerCase().endsWith(".xlsx")){
+				return true;  
+			}else{
+				return false;
+			}
+		}
+    } 
+	
+	protected void markFile(String string) {
+		File file = new File(string);
+		if(!file.exists()){
+			return;
+		}
+		if (file.renameTo(new File("E:/UploadExcel/mark/" + file.getName()))) {  
+			System.out.println("问题文件:" + file.getName() + "已移动到mark文件夹下");  
+		} else {  
+			System.out.println(file.getName() + "移动失败!请查看原因");  
+		}
+	}
+	
 	public void init() {
 		fileName = "";
 		lastRowNum = 0;
@@ -274,5 +339,4 @@ public class ExcelController extends HttpServlet {
 		msg = "";
 		state = false;
 	}
-
 }
