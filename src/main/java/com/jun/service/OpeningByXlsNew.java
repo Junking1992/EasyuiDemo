@@ -52,6 +52,9 @@ public class OpeningByXlsNew extends ProgressUtil {
 			Map<String, String> delStoreMap = new HashMap<String, String>();
 			for (int i = 0; i < xlsAryList.size(); i++) {
 				Map map = (Map) xlsAryList.get(i);
+				if("NW".equals(getPdType(getStrMapValue(map, "J")))){
+					continue;
+				}
 				// 错误行号
 				errorRowNum = getStrMapValue(map, "RN");
 				// String jarMemo = getStrMapValue(map, "Z");
@@ -78,7 +81,7 @@ public class OpeningByXlsNew extends ProgressUtil {
 				
 				// 主逻辑 先干掉整个库资料
 				if(getStrMapValue(delStoreMap, pk_store).equals("")){					
-					String sql = "update mtws_iquantity set dr=1 where dr=0 and pk_store='"+pk_store+"'";
+					String sql = "update mtws_iquantity set dr=1 where dr=0 and def15!='NW' and pk_store='"+pk_store+"'";
 					update(sql);
 					delStoreMap.put(pk_store, pk_store);
 				}
@@ -323,6 +326,7 @@ public class OpeningByXlsNew extends ProgressUtil {
 				throw new Exception("上传错误,请查看错误信息:");
 			}
 		} catch (Exception e) {
+			System.out.println(errorRowNum);
 			if(conn != null){
 				conn.rollback();
 			}
