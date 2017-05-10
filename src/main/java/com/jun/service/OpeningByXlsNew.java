@@ -52,7 +52,7 @@ public class OpeningByXlsNew extends ProgressUtil {
 			Map<String, String> delStoreMap = new HashMap<String, String>();
 			for (int i = 0; i < xlsAryList.size(); i++) {
 				Map map = (Map) xlsAryList.get(i);
-				if("NW".equals(getPdType(getStrMapValue(map, "J")))){
+				if ("NW".equals(getPdType(getStrMapValue(map, "J")))) {
 					continue;
 				}
 				// 错误行号
@@ -66,9 +66,9 @@ public class OpeningByXlsNew extends ProgressUtil {
 				Map<String, String> abstoreMape = new HashMap<String, String>();
 				try {
 					abstoreMape = getABStore(getStrMapValue(map, "C"));
-				} catch(Exception ex){
+				} catch (Exception ex) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, " + ex.getMessage());
+					logMessage("Excel第" + errorRowNum + "行, " + ex.getMessage());
 				}
 				String pk_area = getStrMapValue(abstoreMape, areaNo);
 				if (getStrMapValue(areaMap, areaNo).equals("")) {
@@ -78,15 +78,15 @@ public class OpeningByXlsNew extends ProgressUtil {
 				}
 				String pk_store = getStrMapValue(abstoreMape, storeNo);
 				String pk_building = getStrMapValue(abstoreMape, buildingNo);
-				
+
 				// 主逻辑 先干掉整个库资料
-				if(getStrMapValue(delStoreMap, pk_store).equals("")){					
-					String sql = "update mtws_iquantity set dr=1 where dr=0 and def15!='NW' and pk_store='"+pk_store+"'";
+				if (getStrMapValue(delStoreMap, pk_store).equals("")) {
+					String sql = "update mtws_iquantity set dr=1 where dr=0 and def15!='NW' and pk_store='" + pk_store + "'";
 					update(sql);
 					delStoreMap.put(pk_store, pk_store);
 				}
-				
-				//由于内部方法抛异常，为了保证不让程序停下来保证速度，这里全部抓住异常做记录
+
+				// 由于内部方法抛异常，为了保证不让程序停下来保证速度，这里全部抓住异常做记录
 				String tubCode = "";
 				String inDate = "";
 				String pdType = "";
@@ -95,12 +95,13 @@ public class OpeningByXlsNew extends ProgressUtil {
 					tubCode = getTubCode(getStrMapValue(map, "D"), getStrMapValue(map, "J"), getStrMapValue(map, "E"), getStrMapValue(map, "F"));
 					inDate = getInDate(getStrMapValue(map, "G"), getStrMapValue(map, "H"), getStrMapValue(map, "I"));
 					pdType = getPdType(getStrMapValue(map, "J"));
-					iturns = getIturns(getStrMapValue(map, "M"), pdType); // getStrMapValue(map, "M");
-				} catch(Exception ex){
+					iturns = getIturns(getStrMapValue(map, "M"), pdType); // getStrMapValue(map,
+																			// "M");
+				} catch (Exception ex) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, " + ex.getMessage());
+					logMessage("Excel第" + errorRowNum + "行, " + ex.getMessage());
 				}
-				
+
 				String iyear = getIyear(getStrMapValue(map, "E"));
 				String oriDate = getStrMapValue(map, "F");
 				String sweetype = getsweetType(getStrMapValue(map, "K"));
@@ -127,74 +128,88 @@ public class OpeningByXlsNew extends ProgressUtil {
 				try {
 					jarList = getJarList(jarMemo, "JAR");
 					jarList2 = getJarList(exJarMemo, "EXJAR");
-				} catch(Exception ex){
+				} catch (Exception ex) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, " + ex.getMessage());
+					logMessage("Excel第" + errorRowNum + "行, " + ex.getMessage());
 				}
 				int ptySumInt = Integer.parseInt(ptySum.toString());
 				// int jarnum = ptySumInt > jarList.size() ? jarList.size() :
 				// ptySumInt;
 				int jarnum = jarList.size();
 				int exJarnum = jarList2.size();
-				if(jarList.size() < 1){
+				if (jarList.size() < 1) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]每桶对应坛号个数不能为0!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]每桶对应坛号个数不能为0!");
 					continue;
 				}
 				if (!jarList.containsAll(jarList2)) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料的发出坛区间[" + exJarMemo + "]不在桶坛区间范围[" + jarMemo + "]内!");
-					//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料的发出坛区间[" + exJarMemo + "]不在桶坛区间范围[" + jarMemo + "]内!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料的发出坛区间[" + exJarMemo + "]不在桶坛区间范围[" + jarMemo + "]内!");
+					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料的发出坛区间[" + exJarMemo + "]不在桶坛区间范围[" +
+					// jarMemo + "]内!");
 				}
-				if (jarnum < 1){
+				if (jarnum < 1) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料的每桶对应坛号[" + jarnum + "]不可为空!");
-					//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料的每桶对应坛号[" + jarnum + "]不可为空!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料的每桶对应坛号[" + jarnum + "]不可为空!");
+					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料的每桶对应坛号[" + jarnum + "]不可为空!");
 				}
-				if (ptySumInt != jarnum){
+				if (ptySumInt != jarnum) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料每桶对应坛号的坛数[" + jarnum + "]不等于档案中的坛数[" + ptySumInt + "]!");
-					//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料每桶对应坛号的坛数[" + jarnum + "]不等于档案中的坛数[" + ptySumInt + "]!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料每桶对应坛号的坛数[" + jarnum + "]不等于档案中的坛数[" + ptySumInt + "]!");
+					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料每桶对应坛号的坛数[" + jarnum + "]不等于档案中的坛数[" +
+					// ptySumInt + "]!");
 				}
-				if (exJarnum > jarnum){
+				if (exJarnum > jarnum) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出坛数[" + exJarnum + "]不可大于每桶对应坛数[" + jarnum + "]!");
-					//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出坛数[" + exJarnum + "]不可大于每桶对应坛数[" + jarnum + "]!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出坛数[" + exJarnum + "]不可大于每桶对应坛数[" + jarnum + "]!");
+					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料发出坛数[" + exJarnum + "]不可大于每桶对应坛数[" + jarnum
+					// + "]!");
 				}
-				if (exQtySum.compareTo(new BigDecimal("0")) < 0 || (exQtySum.compareTo(new BigDecimal("0")) == 0 && jarList2.size() > 0) || (exQtySum.compareTo(new BigDecimal("0")) > 0 && jarList2.size() == 0)){
+				if (exQtySum.compareTo(new BigDecimal("0")) < 0 || (exQtySum.compareTo(new BigDecimal("0")) == 0 && jarList2.size() > 0) || (exQtySum.compareTo(new BigDecimal("0")) > 0 && jarList2.size() == 0)) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "],发出坛数量[" + jarList2.size() + "]不正确!");
-					//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "],发出坛数量[" + jarList2.size() + "]不正确!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "],发出坛数量[" + jarList2.size() + "]不正确!");
+					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料发出数量[" + exQtySum + "],发出坛数量[" +
+					// jarList2.size() + "]不正确!");
 				}
-				if (exQtySum.compareTo(qtySum) > 0){
+				if (exQtySum.compareTo(qtySum) > 0) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum + "]!");
-					//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum + "]!");
+					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum + "]!");
+					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum +
+					// "]!");
 				}
 				// 检查坛数是否合理
 				BigDecimal jarNumByStore = getDecMapValue(jarNumByStoreMap, areaNo + buildingNo + storeNo);
-				if (ptySum.compareTo(jarNumByStore) > 0){
+				if (ptySum.compareTo(jarNumByStore) > 0) {
 					flaf = false;
-					logMessage("Excel第"+errorRowNum+"行, 本次期初坛数[" + ptySum + "]不可大于库总坛数[" + jarNumByStore + "]!");
-					//throw new Exception("本次期初坛数[" + ptySum + "]不可大于库总坛数[" + jarNumByStore + "]!");
+					logMessage("Excel第" + errorRowNum + "行, 本次期初坛数[" + ptySum + "]不可大于库总坛数[" + jarNumByStore + "]!");
+					// throw new Exception("本次期初坛数[" + ptySum + "]不可大于库总坛数[" +
+					// jarNumByStore + "]!");
 				}
-				//检查该库下酒坛基础档是否存在多坛容的情况
+				// 检查该库下酒坛基础档是否存在多坛容的情况
 				boolean checkStoreJarCubageMul = checkCubageMulByStore(pk_store);
 				BigDecimal avgJar = new BigDecimal("0");
 				BigDecimal avgExJar = new BigDecimal("0");
 				BigDecimal avgJarCubage = new BigDecimal("0");
 				BigDecimal avgExJarCubage = new BigDecimal("0");
-				//库内酒坛有多个坛容时，取得坛容单位量
-				if(checkStoreJarCubageMul){
+				// 库内酒坛有多个坛容时，取得坛容单位量
+				if (checkStoreJarCubageMul) {
 					avgJarCubage = getAvgJarCubage(qtySum.subtract(exQtySum), pk_store, "JAR");
 					avgExJarCubage = getAvgJarCubage(exQtySum, pk_store, "EXJAR");
-					BigDecimal avgRate = avgExJarCubage.compareTo(new BigDecimal("0"))==0 ? new BigDecimal("1") : avgJarCubage.divide(avgExJarCubage, 3, BigDecimal.ROUND_HALF_UP);
+					BigDecimal avgRate = avgExJarCubage.compareTo(new BigDecimal("0")) == 0 ? new BigDecimal("1") : avgJarCubage.divide(avgExJarCubage, 3, BigDecimal.ROUND_HALF_UP);
 					if (avgRate.compareTo(new BigDecimal("0.9")) < 0 || avgRate.compareTo(new BigDecimal("1.11")) > 0) {
 						flaf = false;
-						logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出酒坛平均系数[" + avgJarCubage + "]与未发出酒坛平均系数[" + avgExJarCubage + "]差别太大!");
-						//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出酒坛平均数量[" + avgExJar + "]与未发出酒坛平均数量[" + avgJar + "]差别太大!");
+						logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出酒坛平均系数[" + avgJarCubage + "]与未发出酒坛平均系数[" + avgExJarCubage + "]差别太大!");
+						// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+						// tubCode + "]资料发出酒坛平均数量[" + avgExJar + "]与未发出酒坛平均数量["
+						// + avgJar + "]差别太大!");
 					}
-				}else{					
+				} else {
 					if (exJarnum == jarnum && jarnum > 0) {
 						avgJar = qtySum.divide(new BigDecimal(jarnum), 2, BigDecimal.ROUND_HALF_UP);
 						avgExJar = avgJar;
@@ -205,12 +220,18 @@ public class OpeningByXlsNew extends ProgressUtil {
 						}
 					}
 					// 有酒坛和无酒坛平均重量检查：小于0.9或者大于1.11报错
-					BigDecimal avgRate = exJarnum == 0 ? new BigDecimal("1") : avgJar.divide(avgExJar, 3, BigDecimal.ROUND_HALF_UP);
-					if (avgRate.compareTo(new BigDecimal("0.9")) < 0 || avgRate.compareTo(new BigDecimal("1.11")) > 0) {
-						flaf = false;
-						logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出酒坛平均数量[" + avgExJar + "]与未发出酒坛平均数量[" + avgJar + "]差别太大!");
-						//throw new Exception("Excel汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出酒坛平均数量[" + avgExJar + "]与未发出酒坛平均数量[" + avgJar + "]差别太大!");
-					}
+					// BigDecimal avgRate = exJarnum == 0 ? new BigDecimal("1")
+					// : avgJar.divide(avgExJar, 3, BigDecimal.ROUND_HALF_UP);
+					// if (avgRate.compareTo(new BigDecimal("0.9")) < 0 ||
+					// avgRate.compareTo(new BigDecimal("1.11")) > 0) {
+					// flaf = false;
+					// logMessage("Excel第"+errorRowNum+"行, 汇入的库[" + storeNo +
+					// "]桶[" + tubCode + "]资料发出酒坛平均数量[" + avgExJar +
+					// "]与未发出酒坛平均数量[" + avgJar + "]差别太大!");
+					// //throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+					// tubCode + "]资料发出酒坛平均数量[" + avgExJar + "]与未发出酒坛平均数量[" +
+					// avgJar + "]差别太大!");
+					// }
 				}
 
 				BigDecimal qtyJar = new BigDecimal("0");
@@ -222,12 +243,12 @@ public class OpeningByXlsNew extends ProgressUtil {
 				// 标准坛容
 				BigDecimal jarBaseCubage = getDecMapValue(jarCubageByStoreMap, areaNo + buildingNo + storeNo);
 				BigDecimal imQtySum = qtySum.subtract(exQtySum);
-				for (int j = 0; j < jarnum; j++) {				
+				for (int j = 0; j < jarnum; j++) {
 					// 入库重量def14
 					BigDecimal inStoreWgt = new BigDecimal("0");
 					pk_jar = getPk_jar(jarList.get(j).toString());
-//					BigDecimal jarBaseCubage = getJarCubage(pk_jar);
-					if(checkStoreJarCubageMul){
+					// BigDecimal jarBaseCubage = getJarCubage(pk_jar);
+					if (checkStoreJarCubageMul) {
 						avgJar = jarBaseCubage.multiply(avgJarCubage);
 						avgExJar = jarBaseCubage.multiply(avgExJarCubage);
 					}
@@ -276,13 +297,13 @@ public class OpeningByXlsNew extends ProgressUtil {
 						jarState = "半坛";
 					}
 					if (qtyJar.compareTo(new BigDecimal("0")) == 0) {
-						//if ("NW,PG".indexOf(pdType) > -1) {
-							jarState = "空坛";
-							statusCode = "00";
-						//} else {
-						//	jarState = "坛底酒";
-						//	statusCode = "01";
-						//}
+						// if ("NW,PG".indexOf(pdType) > -1) {
+						jarState = "空坛";
+						statusCode = "00";
+						// } else {
+						// jarState = "坛底酒";
+						// statusCode = "01";
+						// }
 					}
 					// // 最后一笔单独计算
 					// if (j == jarnum - 1) {
@@ -301,21 +322,25 @@ public class OpeningByXlsNew extends ProgressUtil {
 					// else
 					// jarState = "半坛";
 					// }
+					if (pk_jar == null || "".equals(pk_jar.trim())) {
+						flaf = false;
+						logMessage("Excel第" + errorRowNum + "行, 查无坛号:" + jarList.get(j).toString() + "的资料");
+					}
 					String updateSql = "update mtws_iquantity set dr=1 where nvl(dr,0)=0 and pk_jar='" + pk_jar + "'";
 					String insertSql = "insert into mtws_iquantity (pk_iquantity,pk_product,pk_area,pk_building,pk_store," + "tubcode,pk_jar,iyear,iturns,sweetype,bzmessage,iquertity,pk_measure,jarstate,degree,def7,def10,def14,def15," + "def16,def17,def18,def20,ts,dr)" + " values ('" + pk_jar + "','" + getProduct(pdType) + "','" + pk_area + "','" + pk_building + "','" + pk_store + "'," + "'" + tubCode + "','" + pk_jar + "','" + iyear + "','" + iturns + "','" + sweetype + "','" + bzMessage + "'," + qtyJar + ",'1001A41000000000034A','" + jarState + "','" + degree + "','" + memo + "','" + statusCode + "'," + inStoreWgt + ",'" + pdType + "','" + oriDate + "','" + inDate + "'," + "'" + exDate + "','" + grade + "',to_char(sysdate,'yyyy-mm-dd hh24:mi:ss')," + "'0')";
 					try {
-						if(flaf){
+						if (flaf) {
 							update(updateSql);
 							create(insertSql);
 						}
 					} catch (Exception e) {
 						flaf = false;
-						logMessage("Excel第"+errorRowNum+"行, " + e.getMessage());
+						logMessage("Excel第" + errorRowNum + "行, " + e.getMessage());
 					}
 				}
 				// 进度增长
 				addCount();
-				if(getCurrentCount() % 100 == 0){
+				if (getCurrentCount() % 100 == 0) {
 					System.out.println("进度:" + getCurrentCount() + "/" + getAllCount());
 				}
 			}
@@ -327,7 +352,7 @@ public class OpeningByXlsNew extends ProgressUtil {
 			}
 		} catch (Exception e) {
 			System.out.println(errorRowNum);
-			if(conn != null){
+			if (conn != null) {
 				conn.rollback();
 			}
 			throw e;
@@ -440,49 +465,51 @@ public class OpeningByXlsNew extends ProgressUtil {
 
 	private boolean checkCubageMulByStore(String pk_store) throws SQLException {
 		return false;
-//		boolean check_bo = false;
-//		// TODO 自动生成的方法存根
-//		// 取得05片区各库位总坛数
-//		if (pk_store.equals(""))
-//			pk_store = "XXXXX";
-//		//取得酒坛查询条件
-//		String jarRule = "";
-//		if(sb_Jar.length()!=0){
-//			jarRule = " AND ("+sb_Jar.toString()+")";
-//		}
-//		String jarNumStoreSql = "select jarcubage from mtws_jar where  nvl(dr,0)=0 and pk_store='"+pk_store+"' " + jarRule + " group by jarcubage ";
-//		Statement Stmt = conn.createStatement();
-//		ResultSet rs = Stmt.executeQuery(jarNumStoreSql);
-//		int count = 0;
-//		while (rs.next()) {
-//			count++;
-//		}
-//		if(count > 1){
-//			return true;
-//		}
-//		Stmt.close();
-//		rs.close();
-//		
-//		return check_bo;
+		// boolean check_bo = false;
+		// // TODO 自动生成的方法存根
+		// // 取得05片区各库位总坛数
+		// if (pk_store.equals(""))
+		// pk_store = "XXXXX";
+		// //取得酒坛查询条件
+		// String jarRule = "";
+		// if(sb_Jar.length()!=0){
+		// jarRule = " AND ("+sb_Jar.toString()+")";
+		// }
+		// String jarNumStoreSql = "select jarcubage from mtws_jar where
+		// nvl(dr,0)=0 and pk_store='"+pk_store+"' " + jarRule + " group by
+		// jarcubage ";
+		// Statement Stmt = conn.createStatement();
+		// ResultSet rs = Stmt.executeQuery(jarNumStoreSql);
+		// int count = 0;
+		// while (rs.next()) {
+		// count++;
+		// }
+		// if(count > 1){
+		// return true;
+		// }
+		// Stmt.close();
+		// rs.close();
+		//
+		// return check_bo;
 	}
-	
-	private BigDecimal getAvgJarCubage(BigDecimal jarWgtSum, String pk_store, String jarFlag) throws Exception{
+
+	private BigDecimal getAvgJarCubage(BigDecimal jarWgtSum, String pk_store, String jarFlag) throws Exception {
 		BigDecimal jarCubageSum = new BigDecimal("0");
-		
+
 		if (pk_store.equals(""))
 			pk_store = "XXXXX";
-		//取得酒坛查询条件
+		// 取得酒坛查询条件
 		String jarRule = "";
-		if(jarFlag.equals("JAR")){
-			if(sb_Jar.length()!=0){
-				jarRule = " AND ("+sb_Jar.toString()+")";
+		if (jarFlag.equals("JAR")) {
+			if (sb_Jar.length() != 0) {
+				jarRule = " AND (" + sb_Jar.toString() + ")";
 			}
-		}else if(jarFlag.equals("EXJAR")){
-			if(sb_exJar.length()!=0){
-				jarRule = " AND ("+sb_exJar.toString()+")";
+		} else if (jarFlag.equals("EXJAR")) {
+			if (sb_exJar.length() != 0) {
+				jarRule = " AND (" + sb_exJar.toString() + ")";
 			}
-		}else{
-			throw new Exception("标识["+jarFlag+"]错误!");
+		} else {
+			throw new Exception("标识[" + jarFlag + "]错误!");
 		}
 
 		String jarNumStoreSql = "select sum(jarcubage) jarcubage from mtws_jar where  nvl(dr,0)=0 and pk_store='" + pk_store + "' " + jarRule;
@@ -493,32 +520,32 @@ public class OpeningByXlsNew extends ProgressUtil {
 		}
 		Stmt.close();
 		rs.close();
-		
+
 		return jarWgtSum.divide(jarCubageSum, 2, BigDecimal.ROUND_HALF_UP);
 	}
-	
-	private BigDecimal getJarCubage(String pk_jar) throws Exception{
+
+	private BigDecimal getJarCubage(String pk_jar) throws Exception {
 		BigDecimal jarCubage = new BigDecimal("0");
-		
+
 		if (pk_jar.equals(""))
 			pk_jar = "XXXXX";
-		//取得酒坛查询条件
+		// 取得酒坛查询条件
 		String jarRule = "";
-		if(sb_Jar.length()!=0){
-			jarRule = " AND ("+sb_Jar.toString()+")";
+		if (sb_Jar.length() != 0) {
+			jarRule = " AND (" + sb_Jar.toString() + ")";
 		}
-		String jarNumStoreSql = "select jarcubage from mtws_jar where pk_jar='"+pk_jar+"'  and  nvl(dr,0)=0 ";
+		String jarNumStoreSql = "select jarcubage from mtws_jar where pk_jar='" + pk_jar + "'  and  nvl(dr,0)=0 ";
 		Statement Stmt = conn.createStatement();
 		ResultSet rs = Stmt.executeQuery(jarNumStoreSql);
-		if(rs.next()){
+		if (rs.next()) {
 			jarCubage = new BigDecimal(rs.getString("jarcubage"));
 		}
 		Stmt.close();
 		rs.close();
-		
+
 		return jarCubage;
 	}
-	
+
 	public int create(String sql) throws SQLException {
 		// PreparedStatement:是预编译的,对于批量处理可以大大提高效率.也叫JDBC存储过程
 		// Statement:在对数据库只执行一次性存取的时侯，用 Statement对象进行处理。
@@ -617,49 +644,49 @@ public class OpeningByXlsNew extends ProgressUtil {
 					min = max;
 					max = temp;
 				}
-				if(max>9999 || min>9999){
-					throw new Exception("坛号["+min+"]-["+max+"]超出范围!");
+				if (max > 9999 || min > 9999) {
+					throw new Exception("坛号[" + min + "]-[" + max + "]超出范围!");
 				}
-				
+
 				String minJar = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(min).length()) + min;
 				String maxJar = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - String.valueOf(max).length()) + max;
-				if(jarFlag.equals("JAR")){
-					if(sb_Jar.length()>0){
+				if (jarFlag.equals("JAR")) {
+					if (sb_Jar.length() > 0) {
 						sb_Jar.append(" OR ");
 					}
-					sb_Jar.append(" (code>='"+minJar+"' and code<='"+maxJar+"') ");
-				}else if(jarFlag.equals("EXJAR")){
-					if(sb_exJar.length()>0){
+					sb_Jar.append(" (code>='" + minJar + "' and code<='" + maxJar + "') ");
+				} else if (jarFlag.equals("EXJAR")) {
+					if (sb_exJar.length() > 0) {
 						sb_exJar.append(" OR ");
 					}
-					sb_exJar.append(" (code>='"+minJar+"' and code<='"+maxJar+"') ");
-				}else{
-					throw new Exception("标识["+jarFlag+"]错误!");
+					sb_exJar.append(" (code>='" + minJar + "' and code<='" + maxJar + "') ");
+				} else {
+					throw new Exception("标识[" + jarFlag + "]错误!");
 				}
-				
+
 				for (int j = 0; j <= max - min; j++) {
 					String jarNo = String.valueOf(min + j);
 					jarList.add(areaNo + buildingNo + storeNo + "0000".substring(0, 4 - jarNo.length()) + jarNo);
 				}
 			} else {
-				if(strTmp.length() > 4){
-					throw new Exception("坛号["+strTmp+"]超出范围!");
+				if (strTmp.length() > 4) {
+					throw new Exception("坛号[" + strTmp + "]超出范围!");
 				}
 				String jarCode = areaNo + buildingNo + storeNo + "0000".substring(0, 4 - strTmp.length()) + strTmp;
 				jarList.add(jarCode);
-				
-				if(jarFlag.equals("JAR")){
-					if(sb_Jar.length()>0){
+
+				if (jarFlag.equals("JAR")) {
+					if (sb_Jar.length() > 0) {
 						sb_Jar.append(" OR ");
 					}
-					sb_Jar.append(" code='"+jarCode+"' ");
-				}else if(jarFlag.equals("EXJAR")){
-					if(sb_exJar.length()>0){
+					sb_Jar.append(" code='" + jarCode + "' ");
+				} else if (jarFlag.equals("EXJAR")) {
+					if (sb_exJar.length() > 0) {
 						sb_exJar.append(" OR ");
 					}
-					sb_exJar.append(" code='"+jarCode+"' ");
-				}else{
-					throw new Exception("标识["+jarFlag+"]错误!");
+					sb_exJar.append(" code='" + jarCode + "' ");
+				} else {
+					throw new Exception("标识[" + jarFlag + "]错误!");
 				}
 			}
 		}
@@ -683,20 +710,27 @@ public class OpeningByXlsNew extends ProgressUtil {
 	}
 
 	private String getGrade(String grade) {
-		// TODO 自动生成的方法存根
-		if (grade.indexOf("特") > -1)
-			return "0";
-		else if (grade.indexOf("一") > -1)
-			return "1";
-		else if (grade.indexOf("二") > -1)
-			return "2";
-		else if (grade.indexOf("三") > -1)
-			return "3";
-		else if (grade.indexOf("四") > -1)
-			return "4";
-		else if (grade.indexOf("未") > -1)
-			return "9";
-		return "";
+		String newGrade = "";
+		if (grade.indexOf("特") > -1) {
+			newGrade = "0";
+		} else if (grade.indexOf("一") > -1) {
+			newGrade = "1";
+		} else if (grade.indexOf("二") > -1) {
+			newGrade = "2";
+		} else if (grade.indexOf("三") > -1) {
+			newGrade = "3";
+		} else if (grade.indexOf("四") > -1) {
+			newGrade = "4";
+		} else if (grade.indexOf("未") > -1) {
+			newGrade = "9";
+		} else{
+			return "";
+		}
+
+		if (grade.indexOf("-") > 0) {
+			newGrade += "-";
+		}
+		return newGrade;
 	}
 
 	private String getBzMessage(String strMapValue) {
@@ -736,7 +770,7 @@ public class OpeningByXlsNew extends ProgressUtil {
 	}
 
 	private String getIturns(String strMapValue, String pdType) throws Exception {
-		if("".equals(strMapValue) && "NW,PG".indexOf(pdType) < 0){
+		if ("".equals(strMapValue) && "NW,PG".indexOf(pdType) < 0) {
 			return "";
 		}
 		strMapValue = strMapValue.replaceAll("，", ",");
@@ -809,8 +843,6 @@ public class OpeningByXlsNew extends ProgressUtil {
 
 		return getStrMapValue(defDocMap, strMapValue);
 	}
-
-
 
 	private String getsweetType(String strMapValue) {
 		// TODO 自动生成的方法存根

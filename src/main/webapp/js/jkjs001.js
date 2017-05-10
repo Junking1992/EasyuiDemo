@@ -18,6 +18,13 @@ function upLoad(id) {
 	progress(id);
 }
 
+function autoUpLoad(id) {
+	$.post("upload", {
+		fileName : '',
+		action : id
+	});
+}
+
 function progress(id) {
 	$('<audio id="chatAudio"> <source src="audio/xunlei.mp3" type="audio/mpeg"> </audio>').appendTo('body');
 	setTimeout(function() {

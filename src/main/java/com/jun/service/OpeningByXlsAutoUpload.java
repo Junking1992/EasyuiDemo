@@ -683,20 +683,27 @@ public class OpeningByXlsAutoUpload extends ProgressUtil {
 	}
 
 	private String getGrade(String grade) {
-		// TODO 自动生成的方法存根
-		if (grade.indexOf("特") > -1)
-			return "0";
-		else if (grade.indexOf("一") > -1)
-			return "1";
-		else if (grade.indexOf("二") > -1)
-			return "2";
-		else if (grade.indexOf("三") > -1)
-			return "3";
-		else if (grade.indexOf("四") > -1)
-			return "4";
-		else if (grade.indexOf("未") > -1)
-			return "9";
-		return "";
+		String newGrade = "";
+		if (grade.indexOf("特") > -1) {
+			newGrade = "0";
+		} else if (grade.indexOf("一") > -1) {
+			newGrade = "1";
+		} else if (grade.indexOf("二") > -1) {
+			newGrade = "2";
+		} else if (grade.indexOf("三") > -1) {
+			newGrade = "3";
+		} else if (grade.indexOf("四") > -1) {
+			newGrade = "4";
+		} else if (grade.indexOf("未") > -1) {
+			newGrade = "9";
+		} else{
+			return "";
+		}
+
+		if (grade.indexOf("-") > 0) {
+			newGrade += "-";
+		}
+		return newGrade;
 	}
 
 	private String getBzMessage(String strMapValue) {

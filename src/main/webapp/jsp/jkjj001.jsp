@@ -15,7 +15,7 @@
 	<div id="cc" class="easyui-layout" data-options="fit:true">
 		<div data-options="region:'west',border:false" style="padding: 15px;width:600px;">
 			坛动态库存导入：<input id="uploadA" class="easyui-filebox" style="width:300px">
-			<a id="btn" href="javascript:upLoad('uploadA');" class="easyui-linkbutton" style="width: 70px">上传</a> 
+			<a id="btn" href="javascript:upLoad('uploadA');" class="easyui-linkbutton" style="width: 70px">上传</a>
 			<img id='msg_uploadA' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadA" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			<br/>
@@ -44,6 +44,7 @@
 			<img id='msg_uploadF' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<br/><br/><div id="progressbar_uploadF" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			<br/>
+			<a id="btn" href="javascript:autoUpLoad('uploadG');" class="easyui-linkbutton" style="width: 70px">自动上传</a>
 		</div>
 		<div id="content" data-options="region:'center',border:false" style="padding: 15px;">
 		</div>
