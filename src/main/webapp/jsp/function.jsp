@@ -22,7 +22,7 @@
 					<p style="color:blue; font-weight:bold;">上传</p>
 					<ul>
 					   <li>
-							<a href="javascript:addTab('tab','酒库资料上传','jsp/jkjj001.jsp');" style="text-decoration:none;color:black;">酒库资料上传</a>
+							<a href="javascript:addTab('tab','酒库资料上传','jsp/jkjj001.jsp');" style="text-decoration:none;color:black;">酒库资料上传1</a>
 					   </li>
 					</ul>
 				</div>
