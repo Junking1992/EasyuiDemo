@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.jun.service.FindDifferent;
 import com.jun.service.OpeningByNewWine;
 import com.jun.service.OpeningByXlsAutoUpload;
 import com.jun.service.OpeningByXlsGuan;
@@ -158,6 +159,12 @@ public class ExcelController extends HttpServlet {
 							}
 							deleteFile(path + name);
 						}
+					}else if("uploadH".equals(action)){
+						main = new FindDifferent();
+						startRowNum = 0;
+						main.fileName = fileName;
+						data = parseExcel(sourcePath + fileName);
+						main.initIquantityDate(data);
 					}
 					state = true;
 				} catch (Exception e) {
@@ -309,7 +316,6 @@ public class ExcelController extends HttpServlet {
 	}
 	
 	class ExcelFilter implements FilenameFilter{
-		@Override
 		public boolean accept(File dir, String name) {
 			if(name.toLowerCase().endsWith(".xls") || name.toLowerCase().endsWith(".xlsx")){
 				return true;  
