@@ -81,7 +81,7 @@ public class OpeningByXlsNew extends ProgressUtil {
 
 				// 主逻辑 先干掉整个库资料
 				if (getStrMapValue(delStoreMap, pk_store).equals("")) {
-					String sql = "update mtws_iquantity set dr=1 where dr=0 and def15!='NW' and pk_store='" + pk_store + "'";
+					String sql = "update mtws_iquantity set dr=2 where dr=0 and def15!='NW' and pk_store='" + pk_store + "'";
 					update(sql);
 					delStoreMap.put(pk_store, pk_store);
 				}
