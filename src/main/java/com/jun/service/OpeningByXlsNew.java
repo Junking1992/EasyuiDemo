@@ -1,7 +1,6 @@
 package com.jun.service;
 
 import java.math.BigDecimal;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -345,6 +344,18 @@ public class OpeningByXlsNew extends ProgressUtil {
 				}
 			}
 			if (flaf) {
+				StringBuffer storeSb = new StringBuffer();
+				List<String> keyList = new ArrayList<String>(delStoreMap.keySet());
+				for (int i = 0; i < keyList.size(); i++) {
+					storeSb.append("'");
+					storeSb.append(delStoreMap.get(keyList.get(i)));
+					storeSb.append("'");
+					if(i < (keyList.size()-1)){
+						storeSb.append(",");
+					}
+				}
+				String delete = "delete from mtws_iquantity where dr=2 and pk_store in (" + storeSb.toString() + ")";
+				update(delete);
 				conn.commit();
 			} else {
 				conn.rollback();

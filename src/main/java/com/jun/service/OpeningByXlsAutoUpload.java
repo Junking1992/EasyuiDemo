@@ -82,7 +82,7 @@ public class OpeningByXlsAutoUpload extends ProgressUtil {
 				
 				// 主逻辑 先干掉整个库资料
 				if(getStrMapValue(delStoreMap, pk_store).equals("")){					
-					String sql = "update mtws_iquantity set dr=1 where dr=0 and def15!='NW' and pk_store='"+pk_store+"'";
+					String sql = "update mtws_iquantity set dr=2 where dr=0 and def15!='NW' and pk_store='"+pk_store+"'";
 					update(sql);
 					delStoreMap.put(pk_store, pk_store);
 				}
@@ -321,6 +321,18 @@ public class OpeningByXlsAutoUpload extends ProgressUtil {
 				}
 			}
 			if (flaf) {
+				StringBuffer storeSb = new StringBuffer();
+				List<String> keyList = new ArrayList<String>(delStoreMap.keySet());
+				for (int i = 0; i < keyList.size(); i++) {
+					storeSb.append("'");
+					storeSb.append(delStoreMap.get(keyList.get(i)));
+					storeSb.append("'");
+					if(i < (keyList.size()-1)){
+						storeSb.append(",");
+					}
+				}
+				String delete = "delete from mtws_iquantity where dr=2 and pk_store in (" + storeSb.toString() + ")";
+				update(delete);
 				conn.commit();
 			} else {
 				conn.rollback();

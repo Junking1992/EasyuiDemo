@@ -330,8 +330,8 @@ public class ExcelController extends HttpServlet {
 		if(!file.exists()){
 			return;
 		}
-		if (file.renameTo(new File("E:/UploadExcel/mark/" + file.getName()))) {  
-			System.out.println("问题文件:" + file.getName() + "已移动到mark文件夹下");  
+		if (file.renameTo(new File("E:/UploadExcel/AutoUploadError/" + file.getName()))) {  
+			System.out.println("问题文件:" + file.getName() + "已移动到AutoUploadError文件夹下");  
 		} else {  
 			System.out.println(file.getName() + "移动失败!请查看原因");  
 		}
