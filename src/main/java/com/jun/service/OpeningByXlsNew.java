@@ -175,13 +175,13 @@ public class OpeningByXlsNew extends ProgressUtil {
 					// tubCode + "]资料发出数量[" + exQtySum + "],发出坛数量[" +
 					// jarList2.size() + "]不正确!");
 				}
-				if (exQtySum.compareTo(qtySum) > 0) {
-					flaf = false;
-					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum + "]!");
-					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
-					// tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum +
-					// "]!");
-				}
+//				if (exQtySum.compareTo(qtySum) > 0) {
+//					flaf = false;
+//					logMessage("Excel第" + errorRowNum + "行, 汇入的库[" + storeNo + "]桶[" + tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum + "]!");
+//					// throw new Exception("Excel汇入的库[" + storeNo + "]桶[" +
+//					// tubCode + "]资料发出数量[" + exQtySum + "]不得大于入库量[" + qtySum +
+//					// "]!");
+//				}
 				// 检查坛数是否合理
 				BigDecimal jarNumByStore = getDecMapValue(jarNumByStoreMap, areaNo + buildingNo + storeNo);
 				if (ptySum.compareTo(jarNumByStore) > 0) {
