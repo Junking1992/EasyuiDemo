@@ -1,5 +1,6 @@
 package com.jun.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,6 +27,7 @@ public class TimeSheetLate {
 	private static Connection conn;
 	private static String allIdSql = "select distinct b.id from time_sheet a left join time_finger b on a.code=b.finger";
 	private static String allDateSql = "select operdate from time_sheet group by operdate order by operdate";
+	private static String checkName = "select distinct name from time_sheet a left join time_finger b on a.code=b.finger where finger is null";
 	private static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
 	public static Map<String, List<Map<String,String>>> errorMsg = new HashMap<String, List<Map<String,String>>>();
 
@@ -59,6 +61,15 @@ public class TimeSheetLate {
 	
 	public void outPut() throws Exception{
 		conn = getConnection();
+		List<String> nullName = querySingle(checkName);
+		if(nullName.size() > 0){
+			StringBuffer sb = new StringBuffer();
+			for(String name : nullName){
+				sb.append(name);
+				sb.append(" ");
+			}
+			throw new Exception("这些人没有指纹数据:" + sb.toString());
+		}
 		List<String> allId = querySingle(allIdSql);
 		List<String> allDate = querySingle(allDateSql);
 		List<String> allTime = null;
@@ -105,6 +116,10 @@ public class TimeSheetLate {
 				row.createCell(1).setCellValue(map.get("DATE"));
 				row.createCell(2).setCellValue(map.get("TYPE"));
 				row.createCell(3).setCellValue(map.get("REMARK"));
+			}
+			File dir = new File(path);
+			if(!dir.exists()){
+				dir.mkdirs();
 			}
 			// 输出Excel文件
 			FileOutputStream output = new FileOutputStream(path + key + ".xls");

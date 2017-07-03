@@ -29,7 +29,7 @@ public class TimeSheet {
 
 	public static void main(String[] args) throws Exception {
 		TimeSheet jk = new TimeSheet();
-		List<Map<String, String>> data = jk.parseExcel("D:/5月考勤.xls");
+		List<Map<String, String>> data = jk.parseExcel("D:/考勤报表6月.xls");
 		System.out.println("共有" + data.size() + "条数据");
 		conn = jk.getConnection();
 		conn.setAutoCommit(false);
@@ -134,7 +134,7 @@ public class TimeSheet {
 				continue;
 			}
 
-			ps.setString(1, code);
+			ps.setString(1, code.trim());
 			ps.setString(2, name);
 			ps.setString(3, operweek);
 			ps.setString(4, operdate);
