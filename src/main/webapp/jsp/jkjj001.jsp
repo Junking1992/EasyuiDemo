@@ -18,7 +18,7 @@
 			<a id="btn" href="javascript:upLoad('uploadA');" class="easyui-linkbutton" style="width: 70px">上传</a>
 			<img id='msg_uploadA' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
 			<a id="btn" href="javascript:autoUpLoad('uploadG');" class="easyui-linkbutton" style="width: 70px">自动上传</a>
-			<br/><br/><div id="progressbar_uploadA" class="easyui-progressbar" style="width:396px;display:none;"></div>
+			<br/><br/><br/><div id="progressbar_uploadA" class="easyui-progressbar" style="width:396px;display:none;"></div>
 			坛基础资料导入：<input id="uploadB" class="easyui-filebox" style="width:300px">
 			<a id="btn" href="javascript:upLoad('uploadB');" class="easyui-linkbutton" style="width: 70px">上传</a> 
 			<img id='msg_uploadB' src='jquery-easyui-v1.5/themes/icons/ok.png' style="display:none;">
