@@ -539,7 +539,9 @@ public class OpeningByXls extends ProgressUtil {
 		return jarList;
 	}
 
-	private String getGrade(String grade) {
+	
+	
+/*	private String getGrade(String grade) {
 		// TODO 自动生成的方法存根
 		if (grade.indexOf("特") > -1)
 			return "0";
@@ -554,7 +556,49 @@ public class OpeningByXls extends ProgressUtil {
 		else if (grade.indexOf("未") > -1)
 			return "9";
 		return "";
+	}*/
+	
+	//等级逻辑
+	private String getGrade(String grade) {
+		if(grade.indexOf("特")>1||grade.indexOf("0")>1){
+			return "0";
+		}else if(grade.indexOf("一") > -1||grade.indexOf("1") > -1) {
+			if(grade.indexOf("-") > -1||grade.indexOf("-") > -1){
+				return "1-";
+			}
+			return "1";
+		}else if(grade.indexOf("二") > -1||grade.indexOf("2") > -1){
+			if(grade.indexOf("-") > -1||grade.indexOf("-") > -1){
+				return "2-";
+			}
+			return "2";
+			
+		}else if(grade.indexOf("三") > -1||grade.indexOf("3") > -1){
+			if(grade.indexOf("-") > -1||grade.indexOf("-") > -1){
+				return "3-";
+			}
+			return "3";
+			
+		}else if(grade.indexOf("四") > -1||grade.indexOf("4") > -1){
+			if(grade.indexOf("-") > -1||grade.indexOf("-") > -1){
+				return "4-";
+			}
+			return "4";
+			
+		}else if(grade.indexOf("未") > -1){
+			return "9";
+		}
+		
+		
+		
+		return "9";
 	}
+	
+	
+	
+	
+	
+	
 
 	private String getBzMessage(String strMapValue) {
 		// TODO 自动生成的方法存根
