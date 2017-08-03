@@ -29,6 +29,7 @@ import com.jun.service.OpeningByNewWine;
 import com.jun.service.OpeningByXlsAutoUpload;
 import com.jun.service.OpeningByXlsGuan;
 import com.jun.service.OpeningByXlsNew;
+import com.jun.service.OpeningByXlsTubGrade;
 import com.jun.service.OpeningGuanDataByXls;
 import com.jun.service.OpeningJarDataByXls;
 import com.jun.service.OpeningStoreDataXls;
@@ -162,6 +163,12 @@ public class ExcelController extends HttpServlet {
 					}else if("uploadH".equals(action)){
 						main = new FindDifferent();
 						startRowNum = 0;
+						main.fileName = fileName;
+						data = parseExcel(sourcePath + fileName);
+						main.initIquantityDate(data);
+					}else if("uploadI".equals(action)){
+						main = new OpeningByXlsTubGrade();
+						startRowNum = 1;
 						main.fileName = fileName;
 						data = parseExcel(sourcePath + fileName);
 						main.initIquantityDate(data);
