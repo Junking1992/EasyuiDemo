@@ -21,15 +21,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class TimeSheet {
-	private String driver = "oracle.jdbc.driver.OracleDriver";
-	private String url = "jdbc:oracle:thin:@127.0.0.1:1521/myorcl";
-	private String user = "jun";
+	private String driver = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://localhost:3306/prod?characterEncoding=utf8&useSSL=true";
+	private String user = "root";
 	private String password = "junking";
 	private static Connection conn;
 
 	public static void main(String[] args) throws Exception {
 		TimeSheet jk = new TimeSheet();
-		List<Map<String, String>> data = jk.parseExcel("D:/7月考勤.xls");
+		List<Map<String, String>> data = jk.parseExcel("E:/8a.xls");
 		System.out.println("共有" + data.size() + "条数据");
 		conn = jk.getConnection();
 		conn.setAutoCommit(false);
@@ -45,7 +45,7 @@ public class TimeSheet {
 		TimeSheetLate late = new TimeSheetLate();
 		late.outPut();
 	}
-
+	
 	public Connection getConnection() throws SQLException, ClassNotFoundException {
 		if (conn == null) {
 			Class.forName(driver);
@@ -119,7 +119,7 @@ public class TimeSheet {
 
 	public void superInsert(List<Map<String, String>> data) throws SQLException {
 		String code, name, operweek, operdate, opertime;
-		String sql = "insert into time_sheet (id,code,name,operweek,operdate,opertime) values (seq_time_sheet.nextval,?,?,?,?,?)";
+		String sql = "insert into time_sheet (id,code,name,operweek,operdate,opertime) values (?,?,?,?,?,?)";
 		PreparedStatement ps = conn.prepareStatement(sql);
 		int count = 0;
 		int all = data.size();
@@ -133,12 +133,13 @@ public class TimeSheet {
 			if(code == null || "".equals(code)){
 				continue;
 			}
-
-			ps.setString(1, code.trim());
-			ps.setString(2, name);
-			ps.setString(3, operweek);
-			ps.setString(4, operdate);
-			ps.setString(5, opertime);
+			
+			ps.setString(1, count + "");
+			ps.setString(2, code.trim());
+			ps.setString(3, name);
+			ps.setString(4, operweek);
+			ps.setString(5, operdate);
+			ps.setString(6, opertime);
 			ps.addBatch();
 
 			if (++count % 1000 == 0) {

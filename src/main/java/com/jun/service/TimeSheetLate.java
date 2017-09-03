@@ -20,9 +20,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 public class TimeSheetLate {
-	private String driver = "oracle.jdbc.driver.OracleDriver";
-	private String url = "jdbc:oracle:thin:@127.0.0.1:1521/myorcl";
-	private String user = "jun";
+	private String driver = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://localhost:3306/prod?characterEncoding=utf8&useSSL=true";
+	private String user = "root";
 	private String password = "junking";
 	private static Connection conn;
 	private static String allIdSql = "select distinct b.id from time_sheet a left join time_finger b on a.code=b.finger";
@@ -36,7 +36,7 @@ public class TimeSheetLate {
 	// 下班时间(早于等于这个时间就算早退)
 	public static String endTime = "17:27";
 	// 导出Excel路径
-	public static String path = "C:/Users/lx/Desktop/Time/";
+	public static String path = "C:/Users/Administrator/Desktop/Time/";
 
 	public static void main(String[] args) throws Exception {
 		TimeSheetLate late = new TimeSheetLate();

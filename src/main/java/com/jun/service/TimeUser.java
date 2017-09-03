@@ -21,9 +21,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class TimeUser {
-	private String driver = "oracle.jdbc.driver.OracleDriver";
-	private String url = "jdbc:oracle:thin:@127.0.0.1:1521/myorcl";
-	private String user = "jun";
+	private String driver = "com.mysql.jdbc.Driver";
+	private String url = "jdbc:mysql://localhost:3306/prod?characterEncoding=utf8&useSSL=true";
+	private String user = "root";
 	private String password = "junking";
 	private static Connection conn;
 
